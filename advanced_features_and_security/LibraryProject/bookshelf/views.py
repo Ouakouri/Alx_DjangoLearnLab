@@ -19,10 +19,10 @@ def my_view(request):
     results = MyModel.objects.filter(name__icontains=query)
     return render(request, 'my_template.html', {'results': results})
 from django import forms
+from .forms import ExampleForm"
 
 class MyForm(forms.Form):
     query = forms.CharField(max_length=100)
-
 
 
 # Create your views here.
