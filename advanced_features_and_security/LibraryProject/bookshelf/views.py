@@ -12,4 +12,17 @@ def create_books(request):
 
     return render(request, 'create_books.html', context)
 
+from .models import MyModel
+
+def my_view(request):
+    query = request.GET.get('query', '')
+    results = MyModel.objects.filter(name__icontains=query)
+    return render(request, 'my_template.html', {'results': results})
+from django import forms
+
+class MyForm(forms.Form):
+    query = forms.CharField(max_length=100)
+
+
+
 # Create your views here.
