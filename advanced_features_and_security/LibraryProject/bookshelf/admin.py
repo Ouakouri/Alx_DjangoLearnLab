@@ -23,7 +23,7 @@ admin.site.register(CustomUser, CustomUserAdmin)
 from django.conf import settings
 from django.db import models
 
-class YourModel(models.Model):
+class bookshelf.CustomUser(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 # Register your models here.
