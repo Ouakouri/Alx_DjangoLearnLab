@@ -18,7 +18,14 @@ class BookListView(generics.ListCreateAPIView):
         if serializer.validated_data['publication_year'] > 2024:
             raise serializers.ValidationError("Publication year can't be in the future.")
         serializer.save()
-        
+
+    def get_queryset(self):
+        queryset = Book.objects.all()
+        author_id = self.request.query_params.get('author_id')
+        if author_id:
+            queryset = queryset.filter(author__id=author_id)
+        return queryset
+
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
@@ -28,3 +35,32 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
         if serializer.validated_data['publication_year'] > 2024:
             raise serializers.ValidationError("Publication year can't be in the future.")
         serializer.save()
+
+class BookCreateView(generics.CreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        publication_year = serializer.validated_data.get('publication_year')
+        if publication_year > datetime.date.today().year:
+            raise ValidationError({'publication_year': 'The publication year cannot be in the future.'})
+        serializer.save()
+
+# Update View to modify an existing book
+class BookUpdateView(generics.UpdateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_update(self, serializer):
+        publication_year = serializer.validated_data.get('publication_year')
+        if publication_year > datetime.date.today().year:
+            raise ValidationError({'publication_year': 'The publication year cannot be in the future.'})
+        serializer.save()
+
+# Delete View to remove a book
+class BookDeleteView(generics.DestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]  
