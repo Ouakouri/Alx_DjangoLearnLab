@@ -6,6 +6,7 @@ from .models import Book, Author
 class BookAPITestCase(APITestCase):
     
     def setUp(self):
+        response = self.client.login()
         self.author = Author.objects.create(name="J.K. Rowling")
         self.book = Book.objects.create(title="Harry Potter", publication_year=1997, author=self.author)
         self.book_url = reverse('book-detail', kwargs={'pk': self.book.id}) 
