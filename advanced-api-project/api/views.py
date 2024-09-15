@@ -14,6 +14,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.filters import OrderingFilter
 
 filters.OrderingFilter
+filters.SearchFilter
 class BookListView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
