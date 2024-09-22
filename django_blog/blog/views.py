@@ -111,6 +111,22 @@ def add_comment(request, post_id):
         form = CommentForm()
     return render(request, 'blog/comment_form.html', {'form': form})
 
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+    success_url = reverse_lazy('post_list')  # Redirect after successful creation
+
+    def form_valid(self, form):
+        # Automatically set the post and author before saving
+        post = get_object_or_404(Post, pk=self.kwargs['post_id'])
+        form.instance.post = post
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('post_detail', kwargs={'pk': self.kwargs['post_id']})
+
 class CommentUpdateView(UpdateView):
     model = Comment
     fields = ['content']
